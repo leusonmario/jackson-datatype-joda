@@ -1,4 +1,26 @@
+
+sudo: required
 language: java
 
 jdk:
   - oraclejdk7
+
+
+script:
+  - mvn clean cobertura:cobertura -Dtest=JodaSerializationTest#testInstantConversion -DfailIfNoTests=false
+
+before_deploy:
+- tar -zcvf coverage-result.tar.gz /home/travis/build/leusonmario/jackson-datatype-joda/target/site/cobertura
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "vMchlU30vEJLTZxGdNKohdCZsdKa3lfT4133TtKSt+dipBSrYHfQTJcF5ACVGhPXdNv9c7GH07D46nC49W3nVHDj3GV4Q5Xis19mTOavVvFrjtfyGKmE2eyQ0wqfQlCRc9UiRF/HY5AbZRr/r2sQLFcXeX2ms4qqr644bRgxLQ8oHG3CbupQRkzJW3qISkDxDWvMohjifeoLIPjSD+cfIG2EaByGc+wgriXnA3sitjnmwW9d/KOXMa7zqJEtjHAhF3ZZtr/8DWu8VpwRHC0tTfQGLvDDU4R1QcKU5cB6o/UiOzTF4FDvYMYBuUaDy3wX6A0qHC29zgL/S4zTMDyWqBLTluOtmJ5vX1DDS9eqX6MXYnhD5J4qlU2wHkDlv5rdIJANCvWUk+XZqQ9wy9V3uB023/JC0ijBDbTojii7GFn827XALi1UbVWWZxGmkZgNmniyRD9iTeOxLg88KkSJGc6Bc7ONfrtakWDnfspKBVJRHeCpDfh4yIsqeupBNJUSIz05+Bc5YcqNvHVI9VGtL4OVhRsa27/3VEbmLzrRv7gwfLdWl5Tj+3WZm+buRnfdcxRDvydmnFALpCoOHY1U3ve53SGKzLwkxD+43e00mhweJAgQpG/6atzC6r5MpZ9jFyVQvO+5d4VSc5bO6Yt2S0DzNKATOEDsLJTLxM+9Vdc="
+
+
+  file: coverage-result.tar.gz
+  file_glob: true
+  overwrite: true
+  skip_cleanup: true
+  on:
+    tags: true
